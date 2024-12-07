@@ -1,0 +1,13 @@
+pragma cashscript ^0.10.0;
+
+// Contrato del Tesoro del DAO
+contract Treasury(pubkey admin) {
+    function spend(pubkey spender, sig spenderSig, int amount, bytes recipientLockingScript) {
+        require(hash160(spender) == hash160(admin));
+        require(checkSig(spenderSig, spender));
+
+        // Enviar BCH a una dirección específica
+        require(tx.outputs[0].value == amount);
+        require(tx.outputs[0].lockingBytecode == recipientLockingScript);
+    }
+}
