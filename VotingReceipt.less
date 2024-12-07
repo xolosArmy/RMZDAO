@@ -1,0 +1,16 @@
+// Emite un NFT sin capability, con un commitment: {hash_del_voto, amount_depositada, proposal_id}
+
+// Input: Xolos $RMZ depositados
+// Output: NFT del recibo y Xolos $RMZ bloqueados en este covenant, hasta el reveal
+
+OP_UTXOTOKENCATEGORY
+<verify_fungible_token_category_of_Xolos_RMZ>
+OP_EQUALVERIFY
+
+// Al reveal:
+// - Se debe presentar la preimagen del hash del voto (voto + salt).
+// - Comparar con el commitment del NFT: Si coincide, permitir devolver Xolos $RMZ al votante
+// - Si no revela, el NFT se puede gastar por el contrato de la propuesta y confiscar parte o todo el depósito.
+
+<check_vote_preimage_match>
+OP_VERIFY
