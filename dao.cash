@@ -1,0 +1,28 @@
+pragma cashscript ^0.10.0;
+
+// Contrato principal del DAO
+contract DAO(pubkey admin, bytes20 tokenCategory) {
+    function propose(pubkey proposer, sig proposerSig, bytes proposalHash) {
+        require(hash160(proposer) == hash160(admin));
+        require(checkSig(proposerSig, proposer));
+
+        // Requiere que se guarde la propuesta en un almacenamiento off-chain
+        console.log("Propuesta recibida: ", proposalHash);
+    }
+
+    function vote(pubkey voter, sig voterSig, int voteWeight, bytes proposalHash) {
+        require(checkSig(voterSig, voter));
+        require(voteWeight > 0);
+
+        // Logs de votos para análisis off-chain
+        console.log("Voto registrado para: ", proposalHash);
+        console.log("Peso del voto: ", voteWeight);
+    }
+
+    function execute(bytes proposalHash, pubkey executor, sig executorSig) {
+        require(hash160(executor) == hash160(admin));
+        require(checkSig(executorSig, executor));
+
+        console.log("Propuesta ejecutada: ", proposalHash);
+    }
+}
