@@ -1,0 +1,25 @@
+// PROPOSAL_<ID>_NFT con capability mutable (para cambiar estado de "pendiente" a "en votación", luego "finalizada")
+
+// Input:
+//   - Debe contener el NFT con el ID de propuesta y un commitment que incluya:
+//     - ID de la propuesta
+//     - Estado actual (pendiente/votación/finalizada)
+//     - Raíz merkle de votos sellados (cuando está en fase de votación)
+//   - Debe recibir Xolos $RMZ depositados por votantes (en sub-covenants de voto).
+
+OP_UTXOTOKENCATEGORY          // Categoría del NFT de propuesta
+<expected_proposal_category>  // Categ. esperada derivada del DAO
+OP_EQUALVERIFY
+
+// Cambio de estado:
+// - De "pendiente" a "votación": requiere firmar la transacción con el NFT del DAO principal para autorizar
+// - De "votación" a "finalizada": requiere la revelación de votos y verificación del merkle root.
+
+// La lógica verifica:
+// 1. Si se inicia votación: actualizar NFT propuesta con estado "votación".
+// 2. Si se cierra: merkle proofs de cada voto revelado, contar resultados y actualizar estado a "finalizada".
+
+<check_merkle_proofs>
+<verify_quorum_and_majority>
+<update_proposal_nft_state>
+OP_VERIFY
