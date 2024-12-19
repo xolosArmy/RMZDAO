@@ -1,7 +1,7 @@
 pragma cashscript ^0.10.0;
 
 // Contrato principal del DAO
-contract DAO(pubkey admin, bytes20 tokenCategory) {
+contract DAO(pubkey admin, bytes32 tokenCategory) {
     function propose(pubkey proposer, sig proposerSig, bytes proposalHash) {
         require(hash160(proposer) == hash160(admin));
         require(checkSig(proposerSig, proposer));
@@ -10,9 +10,12 @@ contract DAO(pubkey admin, bytes20 tokenCategory) {
         console.log("Propuesta recibida: ", proposalHash);
     }
 
-    function vote(pubkey voter, sig voterSig, int voteWeight, bytes proposalHash) {
+    function vote(pubkey voter, sig voterSig, int voteWeight, bytes32 txTokenCategory, bytes proposalHash) {
         require(checkSig(voterSig, voter));
         require(voteWeight > 0);
+
+        // Verificar que el tokenCategory sea igual al ID del token del contrato
+        require(txTokenCategory == tokenCategory, "No autorizado: Token inválido");
 
         // Logs de votos para análisis off-chain
         console.log("Voto registrado para: ", proposalHash);
@@ -26,3 +29,6 @@ contract DAO(pubkey admin, bytes20 tokenCategory) {
         console.log("Propuesta ejecutada: ", proposalHash);
     }
 }
+
+
+

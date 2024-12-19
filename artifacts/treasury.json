@@ -1,0 +1,62 @@
+{
+  "contractName": "Treasury",
+  "constructorInputs": [
+    {
+      "name": "admin",
+      "type": "pubkey"
+    }
+  ],
+  "abi": [
+    {
+      "name": "spend",
+      "inputs": [
+        {
+          "name": "spender",
+          "type": "pubkey"
+        },
+        {
+          "name": "spenderSig",
+          "type": "sig"
+        },
+        {
+          "name": "amount",
+          "type": "int"
+        },
+        {
+          "name": "recipientLockingScript",
+          "type": "bytes"
+        }
+      ]
+    }
+  ],
+  "bytecode": "OP_OVER OP_HASH160 OP_SWAP OP_HASH160 OP_EQUALVERIFY OP_CHECKSIGVERIFY OP_0 OP_OUTPUTVALUE OP_NUMEQUALVERIFY OP_0 OP_OUTPUTBYTECODE OP_EQUAL",
+  "source": "pragma cashscript ^0.10.0;\r\n\r\n// Contrato del Tesoro del DAO\r\ncontract Treasury(pubkey admin) {\r\n    function spend(pubkey spender, sig spenderSig, int amount, bytes recipientLockingScript) {\r\n        require(hash160(spender) == hash160(admin));\r\n        require(checkSig(spenderSig, spender));\r\n\r\n        // Enviar BCH a una dirección específica\r\n        require(tx.outputs[0].value == amount);\r\n        require(tx.outputs[0].lockingBytecode == recipientLockingScript);\r\n    }\r\n}\r\n",
+  "debug": {
+    "bytecode": "5179a9517aa98769517a517aac6900cc517a9c6900cd517a87",
+    "sourceMap": "6:24:6:31;;:16::32:1;:44::49:0;;:36::50:1;:16;:8::52;7:25:7:35:0;;:37::44;;:16::45:1;:8::47;10:27:10:28:0;:16::35:1;:39::45:0;;:16:::1;:8::47;11:27:11:28:0;:16::45:1;:49::71:0;;:16:::1",
+    "logs": [],
+    "requires": [
+      {
+        "ip": 8,
+        "line": 6
+      },
+      {
+        "ip": 14,
+        "line": 7
+      },
+      {
+        "ip": 20,
+        "line": 10
+      },
+      {
+        "ip": 26,
+        "line": 11
+      }
+    ]
+  },
+  "compiler": {
+    "name": "cashc",
+    "version": "0.10.5"
+  },
+  "updatedAt": "2024-12-18T21:41:13.175Z"
+}

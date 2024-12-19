@@ -1,0 +1,166 @@
+{
+  "contractName": "DAO",
+  "constructorInputs": [
+    {
+      "name": "admin",
+      "type": "pubkey"
+    },
+    {
+      "name": "tokenCategory",
+      "type": "bytes32"
+    }
+  ],
+  "abi": [
+    {
+      "name": "propose",
+      "inputs": [
+        {
+          "name": "proposer",
+          "type": "pubkey"
+        },
+        {
+          "name": "proposerSig",
+          "type": "sig"
+        },
+        {
+          "name": "proposalHash",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "vote",
+      "inputs": [
+        {
+          "name": "voter",
+          "type": "pubkey"
+        },
+        {
+          "name": "voterSig",
+          "type": "sig"
+        },
+        {
+          "name": "voteWeight",
+          "type": "int"
+        },
+        {
+          "name": "txTokenCategory",
+          "type": "bytes32"
+        },
+        {
+          "name": "proposalHash",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "execute",
+      "inputs": [
+        {
+          "name": "proposalHash",
+          "type": "bytes"
+        },
+        {
+          "name": "executor",
+          "type": "pubkey"
+        },
+        {
+          "name": "executorSig",
+          "type": "sig"
+        }
+      ]
+    }
+  ],
+  "bytecode": "OP_2 OP_PICK OP_0 OP_NUMEQUAL OP_IF OP_3 OP_PICK OP_HASH160 OP_SWAP OP_HASH160 OP_EQUALVERIFY OP_2SWAP OP_CHECKSIG OP_NIP OP_NIP OP_NIP OP_ELSE OP_2 OP_PICK OP_1 OP_NUMEQUAL OP_IF OP_4 OP_ROLL OP_4 OP_ROLL OP_CHECKSIGVERIFY OP_3 OP_ROLL OP_0 OP_GREATERTHAN OP_VERIFY OP_3 OP_ROLL OP_ROT OP_EQUAL OP_NIP OP_NIP OP_NIP OP_ELSE OP_ROT OP_2 OP_NUMEQUALVERIFY OP_3 OP_PICK OP_HASH160 OP_SWAP OP_HASH160 OP_EQUALVERIFY OP_2SWAP OP_CHECKSIG OP_NIP OP_NIP OP_ENDIF OP_ENDIF",
+  "source": "pragma cashscript ^0.10.0;\r\n\r\n// Contrato principal del DAO\r\ncontract DAO(pubkey admin, bytes32 tokenCategory) {\r\n    function propose(pubkey proposer, sig proposerSig, bytes proposalHash) {\r\n        require(hash160(proposer) == hash160(admin));\r\n        require(checkSig(proposerSig, proposer));\r\n\r\n        // Requiere que se guarde la propuesta en un almacenamiento off-chain\r\n        console.log(\"Propuesta recibida: \", proposalHash);\r\n    }\r\n\r\n    function vote(pubkey voter, sig voterSig, int voteWeight, bytes32 txTokenCategory, bytes proposalHash) {\r\n        require(checkSig(voterSig, voter));\r\n        require(voteWeight > 0);\r\n\r\n        // Verificar que el tokenCategory sea igual al ID del token del contrato\r\n        require(txTokenCategory == tokenCategory, \"No autorizado: Token inválido\");\r\n\r\n        // Logs de votos para análisis off-chain\r\n        console.log(\"Voto registrado para: \", proposalHash);\r\n        console.log(\"Peso del voto: \", voteWeight);\r\n    }\r\n\r\n    function execute(bytes proposalHash, pubkey executor, sig executorSig) {\r\n        require(hash160(executor) == hash160(admin));\r\n        require(checkSig(executorSig, executor));\r\n\r\n        console.log(\"Propuesta ejecutada: \", proposalHash);\r\n    }\r\n}\r\n\r\n\r\n\r\n",
+  "debug": {
+    "bytecode": "5279009c635379a9517aa98769537a537aac777777675279519c63547a547aac69537a00a069537a527a8777777767527a529c695379a9517aa98769537a537aac77776868",
+    "sourceMap": "5:4:11:5;;;;;6:24:6:32;;:16::33:1;:45::50:0;;:37::51:1;:16;:8::53;7:25:7:36:0;;:38::46;;:16::47:1;5:4:11:5;;;;13::23::0;;;;;14:25:14:33;;:35::40;;:16::41:1;:8::43;15:16:15:26:0;;:29::30;:16:::1;:8::32;18:16:18:31:0;;:35::48;;:16:::1;13:4:23:5;;;;25::30::0;;;;;26:24:26:32;;:16::33:1;:45::50:0;;:37::51:1;:16;:8::53;27:25:27:36:0;;:38::46;;:16::47:1;25:4:30:5;;4:0:31:1;",
+    "logs": [
+      {
+        "ip": 21,
+        "line": 10,
+        "data": [
+          "Propuesta recibida: ",
+          {
+            "stackIndex": 2,
+            "type": "bytes proposalHash",
+            "ip": 21
+          }
+        ]
+      },
+      {
+        "ip": 46,
+        "line": 21,
+        "data": [
+          "Voto registrado para: ",
+          {
+            "stackIndex": 2,
+            "type": "bytes proposalHash",
+            "ip": 46
+          }
+        ]
+      },
+      {
+        "ip": 46,
+        "line": 22,
+        "data": [
+          "Peso del voto: ",
+          {
+            "type": "int",
+            "stackIndex": 3,
+            "ip": 35
+          }
+        ]
+      },
+      {
+        "ip": 68,
+        "line": 29,
+        "data": [
+          "Propuesta ejecutada: ",
+          {
+            "stackIndex": 1,
+            "type": "bytes proposalHash",
+            "ip": 68
+          }
+        ]
+      }
+    ],
+    "requires": [
+      {
+        "ip": 14,
+        "line": 6
+      },
+      {
+        "ip": 20,
+        "line": 7
+      },
+      {
+        "ip": 34,
+        "line": 14
+      },
+      {
+        "ip": 39,
+        "line": 15
+      },
+      {
+        "ip": 45,
+        "line": 18,
+        "message": "No autorizado: Token inválido"
+      },
+      {
+        "ip": 61,
+        "line": 26
+      },
+      {
+        "ip": 67,
+        "line": 27
+      }
+    ]
+  },
+  "compiler": {
+    "name": "cashc",
+    "version": "0.10.5"
+  },
+  "updatedAt": "2024-12-18T21:40:30.686Z"
+}
